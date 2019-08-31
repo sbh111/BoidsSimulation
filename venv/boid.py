@@ -8,14 +8,22 @@ class Boid:
         self.velocity = vel
         self.s = s
 
-        self.radius = 5
+        self.neighborRadius = 50
         self.maxForce = 0.03
-        self.maxSpeed = 2
+        self.maxSpeed = 3
+
+    def getPos(self):
+        return self.pos
+
+    def getNeighborRadius(self):
+        return self.neighborRadius
 
     def draw(self):
         screen = pygame.display.get_surface()
         x, y = self.pos
         pygame.draw.circle(screen, (255, 0, 0), (int(x), int(y)), self.s)
+        #pygame.draw.circle(screen, (0, 255, 0), (int(x), int(y)), self.neighborRadius, 1)
+
 
 
     def update(self, acc):

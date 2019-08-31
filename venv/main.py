@@ -6,7 +6,7 @@ def main():
     display = pygame.display.set_mode((800, 600))
     pygame.display.set_caption("Boids Simulation")
 
-    flock = Flock(10)
+    flock = Flock(50)
 
     while True:
         for event in pygame.event.get():
