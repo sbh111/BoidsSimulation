@@ -16,7 +16,7 @@ class Flock:
             y = random.randint(0, y)
             vel = m.Vector2(random.uniform(-3, 3), random.uniform(-3, 3))
 
-            flockList.append(Boid(m.Vector2(x, y), vel, 2))
+            flockList.append(Boid(m.Vector2(x, y), vel))
         return flockList
 
 
@@ -82,7 +82,8 @@ class Flock:
 
             acc += (.01 * self.cohesion(boid, neighbors))
             acc += (1.1 * self.seperation(boid, neighbors))
-            acc += (.07 * self.alignment(boid, neighbors))
+            acc += (.08 * self.alignment(boid, neighbors))
+
             if acc == m.Vector2(0, 0):
                 acc += (.5 * m.Vector2(random.uniform(-2, 2), random.uniform(-2, 2)))
 

@@ -9,7 +9,7 @@ def main():
     pygame.display.set_caption("Boids Simulation")
     random.seed(time.time())
 
-    flock = Flock(50)
+    flock = Flock(100)
     clock = pygame.time.Clock()
 
     while True:
