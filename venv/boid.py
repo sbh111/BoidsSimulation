@@ -2,21 +2,25 @@ import pygame
 import pygame.math as m
 
 class Boid:
-    def __init__(self, pos = m.Vector2(0, 0), vel = m.Vector2(1, 1), s = 1):
+    def __init__(self, pos = m.Vector2(0, 0), vel = m.Vector2(0, 0), s = 1):
 
         self.pos = pos
         self.velocity = vel
         self.s = s
 
-        self.neighborRadius = 50
-        self.maxForce = 0.03
+        self.neighborRadius = 30
         self.maxSpeed = 3
+
 
     def getPos(self):
         return self.pos
 
     def getNeighborRadius(self):
         return self.neighborRadius
+
+    def getVelocity(self):
+        return self.velocity
+
 
     def draw(self):
         screen = pygame.display.get_surface()
@@ -34,6 +38,7 @@ class Boid:
 
     def limitSpeed(self):
         r, phi = self.velocity.as_polar()
+
         if r > self.maxSpeed:
             self.velocity.from_polar((self.maxSpeed, phi))
 

@@ -1,20 +1,25 @@
 import pygame
+import random
+import time
 from flock import Flock
 
 def main():
     pygame.init()
-    display = pygame.display.set_mode((800, 600))
+    display = pygame.display.set_mode((1000, 500))
     pygame.display.set_caption("Boids Simulation")
+    random.seed(time.time())
 
     flock = Flock(50)
+    clock = pygame.time.Clock()
 
     while True:
+        clock.tick(40)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
 
-        display.fill((0, 0, 0))
+        display.fill((0, 0, 50))
 
         flock.draw()
 
