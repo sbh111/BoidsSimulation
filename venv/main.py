@@ -5,7 +5,7 @@ from flock import Flock
 
 def main():
     pygame.init()
-    display = pygame.display.set_mode((1000, 500))
+    display = pygame.display.set_mode((600, 600))
     pygame.display.set_caption("Boids Simulation")
     random.seed(time.time())
 
@@ -20,8 +20,6 @@ def main():
                 quit()
 
         display.fill((0, 0, 50))
-
         flock.draw()
-
         pygame.display.flip()
 main()

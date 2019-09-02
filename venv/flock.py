@@ -2,26 +2,38 @@ import pygame
 import pygame.math as m
 import random
 from boid import Boid
+from quadtree import *
 
 class Flock:
-    def __init__(self, population):
-        self.flock = self.createFlock(population)
+    def __init__(self, popSize):
+        self.flock = self.createFlock(popSize)
+        #self.quadtree = self.createQuadtree(self.flock, 4)
 
 
-    def createFlock(self, population):
+    def createFlock(self, popSize):
         flockList = []
-        for i in range(population):
+        for i in range(popSize):
             x, y = pygame.display.get_surface().get_size()
             x = random.randint(0, x)
             y = random.randint(0, y)
-            vel = m.Vector2(random.uniform(-3, 3), random.uniform(-3, 3))
+            vel = m.Vector2(random.uniform(-10, 10), random.uniform(-10, 10))
 
             flockList.append(Boid(m.Vector2(x, y), vel))
         return flockList
 
+    def createQuadtree(self, list=[], capacity=4):
+        w, h = pygame.display.get_surface().get_size()
+        boundary = Rectangle(0, 0, w, h)
+        quadtree = Quadtree(boundary, capacity)
+        if not len(list) == 0:
+            for object in list:
+                point = Point(object.x, object.y, object)
+                quadtree.insert(point)
+        return quadtree
 
 
 
+    #The Rules for Flocking
     def cohesion(self, myBoid, neighbors):
         #Rule 1: Boids try to fly towards the centre of mass of neighbouring boids.
         if len(neighbors) == 0:
@@ -30,10 +42,10 @@ class Flock:
         centerOfPos = m.Vector2(0, 0)
 
         for neighbor in neighbors:
-            centerOfPos += neighbor.getPos()
+            centerOfPos += neighbor.pos
 
         centerOfPos /= len(neighbors)
-        acc = centerOfPos - myBoid.getPos()
+        acc = centerOfPos - myBoid.pos
         return acc
 
     def seperation(self, myBoid, neighbors):
@@ -43,10 +55,11 @@ class Flock:
 
         acc = m.Vector2(0, 0)
         for neighbor in neighbors:
-            if myBoid.getPos().distance_to(neighbor.getPos()) < myBoid.getNeighborRadius():
-                v = (myBoid.getPos() - neighbor.getPos())
+            if myBoid.pos.distance_to(neighbor.pos) < myBoid.neighborRadius:
+                v = (myBoid.pos - neighbor.pos)
                 r, phi = v.as_polar()
-                r = r**-1
+                if r > 0:
+                    r = r**-1
                 v.from_polar((r, phi))
                 acc += v
         return acc
@@ -58,34 +71,33 @@ class Flock:
 
         v = m.Vector2(0, 0)
         for neighbor in neighbors:
-            v += neighbor.getVelocity()
+            v += neighbor.velocity
         v /= len(neighbors)
-        acc = v - myBoid.getVelocity()
+        acc = v - myBoid.velocity
         return acc
-
-
-
 
 
     def intersects(self, myBoid):
         neighbors = []
         for boid in self.flock:
-            if (myBoid.getPos().distance_to(boid.getPos()) <= myBoid.getNeighborRadius()) and (boid is not myBoid):
+            if (myBoid.pos.distance_to(boid.pos) <= myBoid.neighborRadius) and (boid is not myBoid):
                 neighbors.append(boid)
         return neighbors
+
+
 
     def draw(self):
         for boid in self.flock:
             neighbors = self.intersects(boid)
 
             acc = m.Vector2(0, 0)
-
-            acc += (.01 * self.cohesion(boid, neighbors))
+            acc += (.005 * self.cohesion(boid, neighbors))
             acc += (1.1 * self.seperation(boid, neighbors))
-            acc += (.08 * self.alignment(boid, neighbors))
-
+            acc += (.2 * self.alignment(boid, neighbors))
             if acc == m.Vector2(0, 0):
                 acc += (.5 * m.Vector2(random.uniform(-2, 2), random.uniform(-2, 2)))
 
             boid.update(acc)
             boid.draw()
+
+
