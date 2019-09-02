@@ -2,12 +2,15 @@ import pygame
 import pygame.math as m
 import random
 from boid import Boid
-from quadtree import *
+from quad_tree import *
 
 class Flock:
     def __init__(self, popSize):
         self.flock = self.createFlock(popSize)
-        #self.quadtree = self.createQuadtree(self.flock, 4)
+
+        w, h = pygame.display.get_surface().get_size()
+        boundary = Rectangle(0, 0, w + 1, h + 1)
+        self.quadtree = Quadtree(boundary, 1)
 
 
     def createFlock(self, popSize):
@@ -20,18 +23,6 @@ class Flock:
 
             flockList.append(Boid(m.Vector2(x, y), vel))
         return flockList
-
-    def createQuadtree(self, list=[], capacity=4):
-        w, h = pygame.display.get_surface().get_size()
-        boundary = Rectangle(0, 0, w, h)
-        quadtree = Quadtree(boundary, capacity)
-        if not len(list) == 0:
-            for object in list:
-                point = Point(object.x, object.y, object)
-                quadtree.insert(point)
-        return quadtree
-
-
 
     #The Rules for Flocking
     def cohesion(self, myBoid, neighbors):
@@ -98,6 +89,11 @@ class Flock:
                 acc += (.5 * m.Vector2(random.uniform(-2, 2), random.uniform(-2, 2)))
 
             boid.update(acc)
+            #self.quadtree.insert(Point(boid.x, boid.y, boid))
             boid.draw()
+
+        self.quadtree.reset()
+        self.quadtree.insertPts(self.flock)
+        self.quadtree.drawBoundaries()
 
 

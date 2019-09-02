@@ -2,6 +2,7 @@ import pygame
 import random
 import time
 from flock import Flock
+from quad_tree import *
 
 def main():
     pygame.init()
@@ -9,9 +10,8 @@ def main():
     pygame.display.set_caption("Boids Simulation")
     random.seed(time.time())
 
-    flock = Flock(100)
+    flock = Flock(2)
     clock = pygame.time.Clock()
-
     while True:
         clock.tick(40)
         for event in pygame.event.get():
@@ -20,6 +20,8 @@ def main():
                 quit()
 
         display.fill((0, 0, 50))
+
         flock.draw()
+
         pygame.display.flip()
 main()

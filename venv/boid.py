@@ -69,6 +69,10 @@ class Boid:
         self.wrapAround()
 
 
+        self.x = self.pos.x
+        self.y = self.pos.y
+
+
 
 
 

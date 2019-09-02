@@ -62,9 +62,20 @@ class Quadtree:
     def insert(self, point):
         recursiveInsert(self.root, self.capacity, point)
 
+    def insertPts(self, objects):
+        for object in objects:
+            if not type(object) == type(Point):
+                if type(object) == tuple:
+                    recursiveInsert(self.root, self.capacity, Point(object[0], object[1], object))
+                else:
+                    recursiveInsert(self.root, self.capacity, Point(object.x, object.y, object))
+            else:
+                recursiveInsert(self.root, self.capacity, point)
+
     def drawBoundaries(self):
         screen = pygame.display.get_surface()
         recursiveDrawBoundaries(self.root, screen)
+
     def reset(self):
         self.root.points = []
         self.root.children = []
@@ -131,7 +142,7 @@ def recursiveSubdivide(node, capacity):
     recursiveSubdivide(botRight, capacity)
 
     node.children = [topLeft, topRight, botLeft, botRight]
-    #node.points = []
+    node.points = []
     node.isSubdivided = True
     return
 
