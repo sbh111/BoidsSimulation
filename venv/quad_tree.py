@@ -85,11 +85,13 @@ class Quadtree:
 
 #Quadtree helpers
 def recursiveDrawBoundaries(node, screen):
-    pygame.draw.rect(screen, (255, 255, 255), node.rectBoundary.getRect(), 2)
+    pygame.draw.rect(screen, (100, 100, 100), node.rectBoundary.getRect(), 1)
     if len(node.children) > 0:
         for child in node.children:
             recursiveDrawBoundaries(child, screen)
     return
+
+
 
 def recursiveInsert(node, capacity, point):
     if not node.rectBoundary.containsPt(point):

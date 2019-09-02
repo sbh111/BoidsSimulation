@@ -6,11 +6,11 @@ from quad_tree import *
 
 def main():
     pygame.init()
-    display = pygame.display.set_mode((600, 600))
+    display = pygame.display.set_mode((800, 800))
     pygame.display.set_caption("Boids Simulation")
     random.seed(time.time())
 
-    flock = Flock(2)
+    flock = Flock(100)
     clock = pygame.time.Clock()
     while True:
         clock.tick(40)
