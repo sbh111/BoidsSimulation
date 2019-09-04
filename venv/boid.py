@@ -10,10 +10,15 @@ class Boid:
         self.y = pos.y
         self.velocity = vel
 
-        self.s = int(random.gauss(4,1))
+        self.s = int(random.uniform(1,5))
         r = int(random.gauss(30, 20))
         self.neighborRadius =  r if self.s * 10 < r else self.s * 10
         self.maxSpeed = abs(random.gauss(6,1))
+        self.color = (
+            random.randint(0, 255),
+            random.randint(0, 255),
+            random.randint(0, 255)
+        )
 
     def limitSpeed(self):
         r, phi = self.velocity.as_polar()
@@ -56,12 +61,12 @@ class Boid:
     def draw(self):
         screen = pygame.display.get_surface()
         #x, y = self.pos
-        pygame.draw.circle(screen, (0, 120, 160), (int(self.x), int(self.y)), self.s)
+        pygame.draw.circle(screen, self.color, (int(self.x), int(self.y)), self.s)
 
-        vec = self.pos + 20*self.velocity.normalize()
+        vec = self.pos + 15*self.velocity.normalize()
         end_pos = [vec.x, vec.y]
         start_pos = [int(self.x), int(self.y)]
-        pygame.draw.line(screen, (0, 120, 120), start_pos, end_pos, 4)
+        pygame.draw.line(screen, self.color, start_pos, end_pos, self.s)
         #pygame.draw.circle(screen, (0, 255, 0), (int(x), int(y)), self.neighborRadius, 1)
 
 

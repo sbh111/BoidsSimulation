@@ -14,7 +14,7 @@ def main():
 
     while True:
 
-        clock.tick()
+        clock.tick(60)
         fps = clock.get_fps()
         pygame.display.set_caption("Boids Simulation - FPS: {}".format(fps))
 
@@ -23,7 +23,7 @@ def main():
                 pygame.quit()
                 quit()
 
-        display.fill((0, 0, 50))
+        display.fill((10, 10, 60))
 
         flock.draw()
 

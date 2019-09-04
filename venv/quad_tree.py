@@ -149,7 +149,7 @@ def recursiveQuery(node, pts, range):
 
 
 def recursiveDrawBoundaries(node, screen):
-    pygame.draw.rect(screen, (100, 100, 100), node.rectBoundary.getRect(), 1)
+    pygame.draw.rect(screen, (30, 30, 30), node.rectBoundary.getRect(), 1)
     if len(node.children) > 0:
         for child in node.children:
             recursiveDrawBoundaries(child, screen)
