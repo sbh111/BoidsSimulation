@@ -25,7 +25,9 @@ def main():
 
         display.fill((10, 10, 60))
 
-        flock.draw()
+        #FIXME: teh quadtree seems to be returning points because it works with points internally
+        # so make sure to return the point data for a query
+        flock.draw(False)
 
         pygame.display.flip()
 main()

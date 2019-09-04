@@ -17,6 +17,7 @@ def main():
     for i in range(50):
         pts.append((random.randint(0, 600), random.randint(0, 600)))
 
+
     while True:
         clock.tick(40)
         for event in pygame.event.get():
@@ -40,13 +41,21 @@ def main():
         qtree.reset()
         qtree.insertPts(pts)
 
-        rect = Rectangle(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1], 100, 100)
+        mousePos = pygame.mouse.get_pos()
+        rect = Rectangle(mousePos[0], mousePos[1], 100, 100)
+        circle = Circle(mousePos[0], mousePos[1], 100)
+
         containedPts = []
-        containedPts = qtree.query(rect)
+        containedPts = qtree.query(circle)
         for pt in containedPts:
             pygame.draw.circle(display, (255, 255, 255), pt.data, 4)
+        containedPts = qtree.query(rect)
+        for pt in containedPts:
+            pygame.draw.circle(display, (255, 0, 255), pt.data, 4)
 
         pygame.draw.rect(display, (0, 255, 0), rect.getRect(), 2)
+        pygame.draw.circle(display, (0, 255, 0), mousePos, circle.radius, 2)
+
         qtree.drawBoundaries()
         pygame.display.flip()
 

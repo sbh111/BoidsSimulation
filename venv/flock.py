@@ -24,7 +24,9 @@ class Flock:
             flockList.append(Boid(m.Vector2(x, y), vel))
         return flockList
 
-    #The Rules for Flocking
+
+    '''=================The Rules for Flocking======================='''
+
     def cohesion(self, myBoid, neighbors):
         #Rule 1: Boids try to fly towards the centre of mass of neighbouring boids.
         if len(neighbors) == 0:
@@ -68,20 +70,32 @@ class Flock:
         return acc
 
 
-    def intersects(self, myBoid):
+    def inNeighboorhood(self, myBoid, useQtree):
         neighbors = []
 
-        #O(n^2) algorithm for finding boids in radius
-        for boid in self.flock:
-            if (myBoid.pos.distance_to(boid.pos) <= myBoid.neighborRadius) and (boid is not myBoid):
-                neighbors.append(boid)
+        if useQtree:
+            #O(nLog(n))) algorithm for finding boids in radius
+            circleRange = Circle(myBoid.x, myBoid.y, myBoid.neighborRadius)
+            neighbors.extend(self.quadtree.query(circleRange))
+        else:
+            #O(n^2) algorithm for finding boids in radius
+            for boid in self.flock:
+                if (myBoid.pos.distance_to(boid.pos) <= myBoid.neighborRadius) and (boid is not myBoid):
+                    neighbors.append(boid)
+
         return neighbors
 
 
 
-    def draw(self):
+    def draw(self, useQtree = True, showQtree = True):
+
+
+        self.quadtree.reset()
+        self.quadtree.insertPts(self.flock)
+
+
         for boid in self.flock:
-            neighbors = self.intersects(boid)
+            neighbors = self.inNeighboorhood(boid, useQtree)
 
             acc = m.Vector2(0, 0)
             acc += (.005 * self.cohesion(boid, neighbors))
@@ -95,8 +109,10 @@ class Flock:
             #self.quadtree.insert(Point(boid.x, boid.y, boid))
             boid.draw()
 
-        self.quadtree.reset()
-        self.quadtree.insertPts(self.flock)
-        self.quadtree.drawBoundaries()
+        if showQtree:
+            #boids have updated, so remake the qtree
+            self.quadtree.reset()
+            self.quadtree.insertPts(self.flock)
+            self.quadtree.drawBoundaries()
 
 
