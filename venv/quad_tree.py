@@ -48,14 +48,14 @@ class Circle:
         for pt in points:
             dist = (self.x - pt.x)**2 + (self.y - pt.y)**2
             dist = math.sqrt(dist)
-            if dist < self.radius:
+            if dist <= self.radius:
                 containsPts.append(pt)
         return containsPts
 
     def containsPt(self, point):
         dist = (self.x - point.x) ** 2 + (self.y - point.y) ** 2
         dist = math.sqrt(dist)
-        return dist < self.radius
+        return dist <= self.radius
 
 
 
@@ -146,8 +146,6 @@ class Node:
 
 
 
-
-
 class Quadtree:
     def __init__(self, rectBoundary, capacity = 4):
         self.root = Node(rectBoundary)
@@ -170,9 +168,9 @@ class Quadtree:
                 recursiveInsert(self.root, self.capacity, point)
 
     def query(self, range):
-        pts = []
-        recursiveQuery(self.root, pts, range)
-        return pts
+        dataList = []
+        recursiveQuery(self.root, dataList, range)
+        return [pt.data for pt in dataList]
 
     def drawBoundaries(self):
         screen = pygame.display.get_surface()
@@ -187,23 +185,24 @@ class Quadtree:
 
 #Quadtree helpers
 
-def recursiveQuery(node, pts, range):
+def recursiveQuery(node, dataList, range):
     if not node.rectBoundary.intersects(range):
         return
     elif node.isSubdivided:
         for child in node.children:
-            recursiveQuery(child, pts, range)
+            recursiveQuery(child, dataList, range)
 
     #now have reached a leaf, where the point data is stored
-    containsPts = range.containsPts(node.points)
-    pts.extend(containsPts)
+    pts = range.containsPts(node.points)
+    #do list comp to turn into data
+    dataList.extend(pts)
     return
 
 
 
 
 def recursiveDrawBoundaries(node, screen):
-    pygame.draw.rect(screen, (100, 100, 100), node.rectBoundary.getRect(), 1)
+    pygame.draw.rect(screen, (20, 30, 50), node.rectBoundary.getRect(), 1)
     if len(node.children) > 0:
         for child in node.children:
             recursiveDrawBoundaries(child, screen)

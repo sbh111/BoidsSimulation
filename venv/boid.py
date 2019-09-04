@@ -60,14 +60,13 @@ class Boid:
 
     def draw(self):
         screen = pygame.display.get_surface()
-        #x, y = self.pos
         pygame.draw.circle(screen, self.color, (int(self.x), int(self.y)), self.s)
 
         vec = self.pos + 15*self.velocity.normalize()
         end_pos = [vec.x, vec.y]
         start_pos = [int(self.x), int(self.y)]
         pygame.draw.line(screen, self.color, start_pos, end_pos, self.s)
-        #pygame.draw.circle(screen, (0, 255, 0), (int(x), int(y)), self.neighborRadius, 1)
+        #pygame.draw.circle(screen, (10, 10, 90), (int(self.x), int(self.y)), self.neighborRadius, 1)
 
 
 

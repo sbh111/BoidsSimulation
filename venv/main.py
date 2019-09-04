@@ -6,7 +6,7 @@ from quad_tree import *
 
 def main():
     pygame.init()
-    display = pygame.display.set_mode((800, 800))
+    display = pygame.display.set_mode((400, 400))
     random.seed(time.time())
 
     flock = Flock(100)
@@ -14,9 +14,9 @@ def main():
 
     while True:
 
-        clock.tick(60)
+        clock.tick()
         fps = clock.get_fps()
-        pygame.display.set_caption("Boids Simulation - FPS: {}".format(fps))
+        pygame.display.set_caption("Boids Simulation - FPS: {}".format(int(fps)))
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -25,9 +25,7 @@ def main():
 
         display.fill((10, 10, 60))
 
-        #FIXME: teh quadtree seems to be returning points because it works with points internally
-        # so make sure to return the point data for a query
-        flock.draw(False)
+        flock.draw()
 
         pygame.display.flip()
 main()
