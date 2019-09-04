@@ -191,6 +191,7 @@ def recursiveQuery(node, dataList, range):
     elif node.isSubdivided:
         for child in node.children:
             recursiveQuery(child, dataList, range)
+        return
 
     #now have reached a leaf, where the point data is stored
     pts = range.containsPts(node.points)

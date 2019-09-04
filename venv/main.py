@@ -6,10 +6,10 @@ from quad_tree import *
 
 def main():
     pygame.init()
-    display = pygame.display.set_mode((400, 400))
+    display = pygame.display.set_mode((1200, 800))
     random.seed(time.time())
 
-    flock = Flock(100)
+    flock = Flock(500)
     clock = pygame.time.Clock()
 
     while True:
