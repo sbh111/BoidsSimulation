@@ -34,13 +34,20 @@ def main():
         pts.pop(0)
 
         display.fill((0, 0, 50))
-        #FIXME: python is not making a new Quadtree, its using the previous Quadtree object
         for pt in pts:
             pygame.draw.circle(display, (255, 0, 0), pt, 4)
-            #qtree.insert(Point(pt[0], pt[1], pt))
 
         qtree.reset()
         qtree.insertPts(pts)
+
+        rect = Rectangle(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1], 100, 100)
+        containedPts = []
+        containedPts = qtree.query(rect)
+        for pt in containedPts:
+            pygame.draw.circle(display, (255, 255, 255), pt.data, 4)
+
+        pygame.draw.rect(display, (0, 255, 0), rect.getRect(), 2)
         qtree.drawBoundaries()
         pygame.display.flip()
+
 main()

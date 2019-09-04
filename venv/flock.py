@@ -70,6 +70,8 @@ class Flock:
 
     def intersects(self, myBoid):
         neighbors = []
+
+        #O(n^2) algorithm for finding boids in radius
         for boid in self.flock:
             if (myBoid.pos.distance_to(boid.pos) <= myBoid.neighborRadius) and (boid is not myBoid):
                 neighbors.append(boid)
