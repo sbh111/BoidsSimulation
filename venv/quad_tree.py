@@ -15,6 +15,25 @@ class Rectangle:
         self.w = w
         self.h = h
 
+    def intersects(self, boundary):
+        if type(range) == type(Rectangle):
+
+            #boundary's left, right, top, bottom
+            l1 = boundary.x
+            r1 = l1 + boundary.w
+            t1 = boundary.y
+            b1 = t1 + boundary.h
+
+            #this rects left, right, top, bottom
+            l0 = self.x
+            r0 = l1 + self.w
+            t0 = self.y
+            b0 = t1 + self.h
+
+            return not (r0 < l1 or r1 < l0 or
+                        t0 > b1 or t1 > b0
+                        )
+
     def containsPts(self, points):
         containsPts = []
         for pt in points:
