@@ -1,5 +1,6 @@
 import pygame
 import math
+import queue
 
 class Point:
     def __init__(self, x, y, data = None):
@@ -167,9 +168,12 @@ class Quadtree:
             else:
                 recursiveInsert(self.root, self.capacity, point)
 
-    def query(self, range):
+    def query(self, range, isIterative = False):
         dataList = []
-        recursiveQuery(self.root, dataList, range)
+        if isIterative:
+            iterativeQuery(self.root, dataList, range)
+        else:
+            recursiveQuery(self.root, dataList, range)
         return [pt.data for pt in dataList]
 
     def drawBoundaries(self):
@@ -195,15 +199,36 @@ def recursiveQuery(node, dataList, range):
 
     #now have reached a leaf, where the point data is stored
     pts = range.containsPts(node.points)
-    #do list comp to turn into data
     dataList.extend(pts)
+    return
+
+
+def iterativeQuery(root, dataList, range):
+    stack = queue.LifoQueue()
+    stack.put(root)
+
+    while not stack.empty():
+        node = stack.get()
+
+        if not node.rectBoundary.intersects(range):
+            continue
+        elif node.isSubdivided:
+            for child in node.children:
+                stack.put(child)
+        else:
+            #range intersects the boundary, and the node has not been subdivided
+            #so need to test the points in the node to see if they are within range
+            pts = range.containsPts(node.points)
+            dataList.extend(pts)
     return
 
 
 
 
+
+
 def recursiveDrawBoundaries(node, screen):
-    pygame.draw.rect(screen, (20, 30, 50), node.rectBoundary.getRect(), 1)
+    pygame.draw.rect(screen, (120, 120, 120), node.rectBoundary.getRect(), 1)
     if len(node.children) > 0:
         for child in node.children:
             recursiveDrawBoundaries(child, screen)

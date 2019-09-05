@@ -7,19 +7,20 @@ from quad_tree import *
 def main():
     pygame.init()
     display = pygame.display.set_mode((600, 600))
-    pygame.display.set_caption("Test")
     random.seed(time.time())
 
     clock = pygame.time.Clock()
 
     pts = []
-    qtree = Quadtree(Rectangle(0, 0, 601, 601), 1)
-    for i in range(50):
+    qtree = Quadtree(Rectangle(0, 0, 601, 601), 150)
+    for i in range(5000):
         pts.append((random.randint(0, 600), random.randint(0, 600)))
 
 
     while True:
-        clock.tick(40)
+        clock.tick()
+        fps = clock.get_fps()
+        pygame.display.set_caption("Test - FPS: {}".format(int(fps)))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -48,10 +49,10 @@ def main():
         containedPts = []
         containedPts = qtree.query(circle)
         for pt in containedPts:
-            pygame.draw.circle(display, (255, 255, 255), pt.data, 4)
+            pygame.draw.circle(display, (255, 255, 255), pt, 4)
         containedPts = qtree.query(rect)
         for pt in containedPts:
-            pygame.draw.circle(display, (255, 0, 255), pt.data, 4)
+            pygame.draw.circle(display, (255, 0, 255), pt, 4)
 
         pygame.draw.rect(display, (0, 255, 0), rect.getRect(), 2)
         pygame.draw.circle(display, (0, 255, 0), mousePos, circle.radius, 2)

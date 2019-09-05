@@ -9,7 +9,7 @@ def main():
     display = pygame.display.set_mode((1200, 800))
     random.seed(time.time())
 
-    flock = Flock(500)
+    flock = Flock(100)
     clock = pygame.time.Clock()
 
     while True:
@@ -25,7 +25,7 @@ def main():
 
         display.fill((10, 10, 60))
 
-        flock.draw()
+        flock.draw(False)
 
         pygame.display.flip()
 main()

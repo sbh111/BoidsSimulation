@@ -10,7 +10,7 @@ class Flock:
 
         w, h = pygame.display.get_surface().get_size()
         boundary = Rectangle(0, 0, w + 1, h + 1)
-        self.quadtree = Quadtree(boundary, 8)
+        self.quadtree = Quadtree(boundary, 20)
 
 
     def createFlock(self, popSize):
@@ -98,10 +98,10 @@ class Flock:
             neighbors = self.inNeighboorhood(boid, useQtree)
 
             acc = m.Vector2(0, 0)
-            acc += (.005 * self.cohesion(boid, neighbors))
+            acc += (.004 * self.cohesion(boid, neighbors))
             acc += (1.1 * self.seperation(boid, neighbors))
             acc += (.3 * self.alignment(boid, neighbors))
-            acc *= (1)
+            acc *= (1.2)
             if acc == m.Vector2(0, 0):
                 acc += (.4 * m.Vector2(random.uniform(-2, 2), random.uniform(-2, 2)))
 
