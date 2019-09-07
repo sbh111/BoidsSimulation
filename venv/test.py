@@ -29,7 +29,7 @@ def main():
                 pts.append((pygame.mouse.get_pos()))
             if event.type == pygame.KEYDOWN:
                 if pygame.K_BACKSPACE and len(pts) > 0:
-                    pts.pop()
+                    pts.pop(0)
 
 
         pts.append((random.randint(0, 600), random.randint(0, 600)))

@@ -6,28 +6,53 @@ from quad_tree import *
 
 class Flock:
     def __init__(self, popSize):
-        self.flock = self.createFlock(popSize)
+        self.flock = []
+        self.createFlock(popSize)
 
         w, h = pygame.display.get_surface().get_size()
         boundary = Rectangle(0, 0, w + 1, h + 1)
-        self.quadtree = Quadtree(boundary, 4)
+        self.quadtree = Quadtree(boundary, 1)
 
 
     def createFlock(self, popSize):
-        flockList = []
         for i in range(popSize):
+            self.insertBoid()
+        return
+
+    def insertBoid(self, pos = None):
+
+        vel = m.Vector2(random.uniform(-10, 10), random.uniform(-10, 10))
+        if pos is not None:
+            if type(pos) == tuple:
+                boid = Boid(m.Vector2(pos[0], pos[1]), vel)
+            elif type(pos) == m.Vector2:
+                boid = Boid(pos, vel)
+        else:
             x, y = pygame.display.get_surface().get_size()
             x = random.randint(0, x)
             y = random.randint(0, y)
-            vel = m.Vector2(random.uniform(-10, 10), random.uniform(-10, 10))
+            boid = Boid(m.Vector2(x, y), vel)
+        self.flock.append(boid)
+        return
 
-            flockList.append(Boid(m.Vector2(x, y), vel))
-        return flockList
+
+    def removeBoid(self, boid = None):
+        if len(self.flock) == 0:
+            print("No boids to remove")
+            return
+
+        if boid is not None:
+            self.flock.remove(boid)
+        else:
+            self.flock.pop(0)
+
+
+
 
 
     '''=================The Rules for Flocking======================='''
 
-    def cohesion(self, myBoid, neighbors):
+    def cohesion(self, boid, neighbors):
         #Rule 1: Boids try to fly towards the centre of mass of neighbouring boids.
         if len(neighbors) == 0:
             return m.Vector2(0, 0)
@@ -38,18 +63,29 @@ class Flock:
             centerOfPos += neighbor.pos
 
         centerOfPos /= len(neighbors)
-        acc = centerOfPos - myBoid.pos
+        acc = centerOfPos - boid.pos
+
+        if acc.dot(boid.velocity) < 0:
+            bx = boid.velocity.x
+            ax = acc.x
+            sign = lambda a: math.copysign(1, a)
+
+            if not sign(bx) == sign(ax):
+                acc.x = 0
+            else:
+                acc.y = 0
+
         return acc
 
-    def seperation(self, myBoid, neighbors):
+    def seperation(self, boid, neighbors):
         #Rule 2: Boids try to keep a small distance away from other objects (including other boids).
         if len(neighbors) == 0:
             return m.Vector2(0, 0)
 
         acc = m.Vector2(0, 0)
         for neighbor in neighbors:
-            if myBoid.pos.distance_to(neighbor.pos) < myBoid.neighborRadius:
-                v = (myBoid.pos - neighbor.pos)
+            if boid.pos.distance_to(neighbor.pos) < boid.neighborRadius:
+                v = (boid.pos - neighbor.pos)
                 r, phi = v.as_polar()
                 if r > 0:
                     r = r**-1
@@ -57,7 +93,7 @@ class Flock:
                 acc += v
         return acc
 
-    def alignment(self, myBoid, neighbors):
+    def alignment(self, boid, neighbors):
         #Rule 3: Boids try to match velocity with nearby boids.
         if len(neighbors) == 0:
             return m.Vector2(0, 0)
@@ -66,8 +102,35 @@ class Flock:
         for neighbor in neighbors:
             v += neighbor.velocity
         v /= len(neighbors)
-        acc = v - myBoid.velocity
+        acc = v - boid.velocity
         return acc
+
+    def avoidMouse(self, boid):
+        mousePos  =  m.Vector2(pygame.mouse.get_pos())
+        if not boid.circle.containsPt(Point(mousePos.x, mousePos.y)):
+            return m.Vector2(0, 0)
+
+        atVel = boid.pos + boid.velocity
+        acc = atVel - mousePos
+        if acc.dot(boid.velocity) < 0:
+            bx = boid.velocity.x
+            ax = acc.x
+            sign = lambda a : math.copysign(1, a)
+
+            if not sign(bx) == sign(ax):
+                acc.x = 0
+            else:
+                acc.y = 0
+
+        distTo = boid.pos.distance_to(mousePos)
+        if distTo > 0:
+            acc *= distTo**-1
+        else:
+            acc *= 100
+
+        return  acc
+
+
 
 
     def inNeighboorhood(self, myBoid, useQtree):
@@ -89,21 +152,27 @@ class Flock:
 
     def draw(self, useQtree = True, showQtree = True):
 
-
         self.quadtree.reset()
         self.quadtree.insertPts(self.flock)
 
 
         for boid in self.flock:
             neighbors = self.inNeighboorhood(boid, useQtree)
+            boidNeighbors = [a for a in neighbors if type(a) == Boid]
 
             acc = m.Vector2(0, 0)
-            acc += (.004 * self.cohesion(boid, neighbors))
-            acc += (1.1 * self.seperation(boid, neighbors))
-            acc += (.3 * self.alignment(boid, neighbors))
+            acc += (.004 * self.cohesion(boid, boidNeighbors))
+            acc += (1.1 * self.seperation(boid, boidNeighbors))
+            acc += (.5 * self.alignment(boid, boidNeighbors))
+            acc += (1 * self.avoidMouse(boid))
+
+
+
             acc *= (1.2)
             if acc == m.Vector2(0, 0):
-                acc += (.4 * m.Vector2(random.uniform(-2, 2), random.uniform(-2, 2)))
+                acc += (.3 * m.Vector2(random.uniform(-2, 2), random.uniform(-2, 2)))
+
+
 
             boid.update(acc)
             boid.draw()

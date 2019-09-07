@@ -1,6 +1,7 @@
 import pygame
 import pygame.math as m
 import random
+from shapes import *
 
 class Boid:
     def __init__(self, pos = m.Vector2(0, 0), vel = m.Vector2(0, 0)):
@@ -13,6 +14,7 @@ class Boid:
         self.s = int(random.uniform(1,5))
         r = int(random.gauss(30, 20))
         self.neighborRadius =  r if self.s * 10 < r else self.s * 10
+        self.circle = Circle(self.x, self.y, self.neighborRadius)
         self.maxSpeed = abs(random.gauss(6,1))
         self.color = (
             random.randint(0, 255),
@@ -80,6 +82,8 @@ class Boid:
 
         self.x = self.pos.x
         self.y = self.pos.y
+        self.circle = Circle(self.x, self.y, self.neighborRadius)
+
 
 
 
