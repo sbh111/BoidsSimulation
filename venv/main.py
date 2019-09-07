@@ -25,7 +25,7 @@ def main():
 
         display.fill((10, 10, 60))
 
-        flock.draw(False)
+        flock.draw()
 
         pygame.display.flip()
 main()
