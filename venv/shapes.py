@@ -133,4 +133,3 @@ class Rectangle:
     def getRect(self):
         return pygame.Rect(int(self.x), int(self.y), int(self.w), int(self.h))
 
-

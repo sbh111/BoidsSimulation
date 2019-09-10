@@ -65,16 +65,6 @@ class Flock:
         centerOfPos /= len(neighbors)
         acc = centerOfPos - boid.pos
 
-        if acc.dot(boid.velocity) < 0:
-            bx = boid.velocity.x
-            ax = acc.x
-            sign = lambda a: math.copysign(1, a)
-
-            if not sign(bx) == sign(ax):
-                acc.x = 0
-            else:
-                acc.y = 0
-
         return acc
 
     def seperation(self, boid, neighbors):
