@@ -59,7 +59,8 @@ def recursiveQuery(node, dataList, range):
         return
     elif node.isSubdivided:
         for child in node.children:
-            recursiveQuery(child, dataList, range)
+            if child.rectBoundary.intersects(range):
+                recursiveQuery(child, dataList, range)
         return
 
     #now have reached a leaf, where the point data is stored
