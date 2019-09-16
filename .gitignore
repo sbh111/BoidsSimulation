@@ -2,8 +2,5 @@
 /workspace.xml
 
 # Environments
-.env
-.venv
-env/
+.idea/
 venv/
-.idea
