@@ -1,3 +1,10 @@
+"""
+Author: Saad Bhatti
+Desc:
+This Boid Class holds the methods and attributes of the agent.
+Each boid has an x, y and velocity. The velocity is influenced by the acceleration calculated
+in the Flock class.
+"""
 import pygame
 import pygame.math as m
 import random
@@ -43,23 +50,6 @@ class Boid:
             y = 0
         self.pos.update(x, y)
 
-
-    def boundPos(self):
-        x, y = self.pos
-        w, h = pygame.display.get_surface().get_size()
-
-        if x < 20:
-            self.velocity += m.Vector2(5, 0)
-        elif x > w - 20:
-            self.velocity += m.Vector2(-5, 0)
-
-        if y < 20:
-            self.velocity += m.Vector2(0, 5)
-        elif y > h - 20:
-            self.velocity += m.Vector2(0, -5)
-
-
-
     def draw(self):
         screen = pygame.display.get_surface()
         pygame.draw.circle(screen, self.color, (int(self.x), int(self.y)), self.s)
@@ -74,11 +64,9 @@ class Boid:
 
     def update(self, acc):
         self.velocity += acc
-        #self.boundPos()
         self.limitSpeed()
         self.pos += self.velocity
         self.wrapAround()
-
 
         self.x = self.pos.x
         self.y = self.pos.y
