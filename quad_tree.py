@@ -45,7 +45,7 @@ class Quadtree:
                 else:
                     recursiveInsert(self.root, self.capacity, Point(object.x, object.y, object), self.maxheight)
             else:
-                recursiveInsert(self.root, self.capacity, point, self.maxheight)
+                recursiveInsert(self.root, self.capacity, object, self.maxheight)
 
     def query(self, range, isIterative = False):
         #Passing in a list so no time/space wasted in copying
