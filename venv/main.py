@@ -1,3 +1,17 @@
+"""
+Author: Saad Bhatti
+Desc:
+This is an implementation of Craig Reynolds's Flocking Algorithm, which he developed in 1986.
+The Bird-oids, Boids, in the flock influence and are influenced by other Boids in its neighborhood.
+Based on their neighbors attributes, the Boids adjust their velocity according to 3 core rules.
+The first rule is Cohesion. In Cohesion, a Boid will find the center of its neighbors, and will adjust its velocity towards it.
+The second rule is Seperation. In Seperation, a Boid will try to maintain a minimum distance from its neighboring Boids.
+The third rule is Alignment. In Alignment, a Boid will try to adjust its velocity to match the direction of its neighboring Boids.
+The Boids' total acceleration will be a combination of these rules.
+The resulting movements and behaviour is very interesting and Boids seem to appear intelligent, that's what makes this algorihtm
+one of my favorite algorithms.
+"""
+
 import pygame
 import random
 import time
@@ -6,10 +20,10 @@ import sys
 
 def main():
     pygame.init()
-    display = pygame.display.set_mode((700, 600))
+    display = pygame.display.set_mode((600, 600))
     random.seed(time.time())
 
-    flock = Flock(50)
+    flock = Flock(60)
     clock = pygame.time.Clock()
 
     useTree = True
@@ -31,6 +45,7 @@ def main():
 
     while True:
 
+        #limit to 30 fps
         clock.tick(30)
         fps = clock.get_fps()
 
@@ -63,9 +78,10 @@ def main():
         flockLen = len(flock.flock)
         pygame.display.set_caption("Boids Simulation - Boids: {0} - FPS: {1}".format(flockLen, int(fps)))
 
+        #very basic menu, will implement buttons later.
         states = '\r    # of Boids: {0},' \
-                 ' Use Quad-tree: {1},' \
-                 ' Show Quad-tree boundaries: {2},' \
+                 ' Use Qtree: {1},' \
+                 ' Show Qtree: {2},' \
                  ' Cohesion: {3},' \
                  ' Seperation: {4},' \
                  ' Alignment: {5}     '.\

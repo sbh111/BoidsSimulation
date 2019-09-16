@@ -1,17 +1,25 @@
+"""
+Author: Saad Bhatti
+Desc:
+This file manages the flock, and applies the Flocking Algorithm to the flock.
+"""
+
 import pygame
 import pygame.math as m
 import random
 from boid import Boid
 from quad_tree import *
+from profileCode import profile
+
 
 class Flock:
-    def __init__(self, popSize):
+    def __init__(self, popSize, w=0, h=0):
         self.flock = []
         self.createFlock(popSize)
 
         w, h = pygame.display.get_surface().get_size()
-        boundary = Rectangle(0, 0, w + 1, h + 1)
-        self.quadtree = Quadtree(boundary, 2)
+        self.boundary = Rectangle(0, 0, w + 1, h + 1)
+        self.quadtree = Quadtree(self.boundary, 2)
 
 
     def createFlock(self, popSize):
@@ -50,10 +58,10 @@ class Flock:
 
 
 
-    '''=================The Rules for Flocking======================='''
+    #=================The Rules for Flocking=======================
 
     def cohesion(self, boid, neighbors):
-        #Rule 1: Boids try to fly towards the centre of mass of neighbouring boids.
+        #Rule 1: Boids try to fly towards the center of mass of neighbouring boids.
         if len(neighbors) == 0:
             return m.Vector2(0, 0)
 
@@ -64,7 +72,6 @@ class Flock:
 
         centerOfPos /= len(neighbors)
         acc = centerOfPos - boid.pos
-
         return acc
 
     def seperation(self, boid, neighbors):
@@ -96,6 +103,7 @@ class Flock:
         return acc
 
     def avoidMouse(self, boid):
+        #Boids try to avoid/flee mouse position
         mousePos  =  m.Vector2(pygame.mouse.get_pos())
         if not boid.circle.containsPt(Point(mousePos.x, mousePos.y)):
             return m.Vector2(0, 0)
@@ -122,7 +130,7 @@ class Flock:
 
 
 
-
+    #@profile
     def inNeighboorhood(self, myBoid, useQtree):
         neighbors = []
 
@@ -135,19 +143,21 @@ class Flock:
             for boid in self.flock:
                 if (myBoid.pos.distance_to(boid.pos) <= myBoid.neighborRadius) and (boid is not myBoid):
                     neighbors.append(boid)
-
         return neighbors
 
 
 
     def draw(self, useQtree = True, showQtree = True, useCohesion = True, useSeperation = True, useAlignment = True):
 
+        #remake Quad-tree each frame because boids have moved since last frame.
+        #remaking Quad-tree doesn't take that much time, so won't affect fps all that much
         self.quadtree.reset()
         self.quadtree.insertPts(self.flock)
 
 
         for boid in self.flock:
             neighbors = self.inNeighboorhood(boid, useQtree)
+            #filter out Nones, and other types
             boidNeighbors = [a for a in neighbors if type(a) == Boid]
 
             acc = m.Vector2(0, 0)
@@ -160,6 +170,7 @@ class Flock:
 
             acc += (1 * self.avoidMouse(boid))
 
+            #if Boid has no neighbirs, it will just wander randomly
             if acc == m.Vector2(0, 0):
                 acc += (.3 * m.Vector2(random.uniform(-2, 2), random.uniform(-2, 2)))
 

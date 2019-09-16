@@ -1,6 +1,7 @@
+
+#This file holds commonly used shapes and classes.
 import math
 import pygame
-
 
 
 class Point:
@@ -11,6 +12,7 @@ class Point:
 
     @staticmethod
     def distToLine(px, py, lx1, ly1, lx2, ly2):
+        #calculates euclidian distance.
         A = px - lx1
         B = py - ly1
         C = lx2 -lx1
@@ -35,7 +37,6 @@ class Point:
 
         dx = px - xx
         dy = py - yy
-
         return math.sqrt(dx**2 + dy**2)
 
 
@@ -45,19 +46,19 @@ class Circle:
         self.x = x
         self.y = y
 
-    def containsPts(self, points):
-        containsPts = []
-        for pt in points:
-            dist = (self.x - pt.x)**2 + (self.y - pt.y)**2
-            dist = math.sqrt(dist)
-            if dist <= self.radius:
-                containsPts.append(pt)
-        return containsPts
-
     def containsPt(self, point):
         dist = (self.x - point.x) ** 2 + (self.y - point.y) ** 2
         dist = math.sqrt(dist)
         return dist <= self.radius
+
+    def containsPts(self, points):
+        containsPts = []
+        for pt in points:
+            if self.containsPt(pt):
+                containsPts.append(pt)
+        return containsPts
+
+
 
 
 
@@ -71,8 +72,10 @@ class Rectangle:
         self.w = w
         self.h = h
 
-
     def intersects(self, boundary):
+        #check to see if rect intersects a boundary.
+        #boundary can be a Rect or Circle
+
         # this rects left, right, top, bottom
         l0 = self.x
         r0 = l0 + self.w
@@ -95,7 +98,7 @@ class Rectangle:
             cy = boundary.y
             cr = boundary.radius
 
-            if self.containsPt(Point(cx, cy)):
+            if self.containsPt(cx, cy):
                 return True
 
             if(
@@ -114,20 +117,16 @@ class Rectangle:
     def containsPts(self, points):
         containsPts = []
         for pt in points:
-            if(
-            pt.x >= self.x and
-            pt.x < self.x + self.w and
-            pt.y >= self.y and
-            pt.y < self.y + self.h):
+            if self.containsPt(pt.x, pt.y):
                 containsPts.append(pt)
         return containsPts
 
-    def containsPt(self, point):
+    def containsPt(self, x, y):
         return (
-                point.x >= self.x and
-                point.x < self.x + self.w and
-                point.y >= self.y and
-                point.y < self.y + self.h
+                x >= self.x and
+                x < self.x + self.w and
+                y >= self.y and
+                y < self.y + self.h
         )
 
     def getRect(self):

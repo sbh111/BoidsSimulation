@@ -1,3 +1,7 @@
+"""
+Desc:
+just some test code used to test Quad-tree.
+"""
 import pygame
 import random
 import time
@@ -43,7 +47,7 @@ def main():
         qtree.insertPts(pts)
 
         mousePos = pygame.mouse.get_pos()
-        rect = Rectangle(mousePos[0], mousePos[1], 100, 100)
+        rect = Rectangle(mousePos[0]-50, mousePos[1]-50, 100, 100)
         circle = Circle(mousePos[0], mousePos[1], 100)
 
         containedPts = []
