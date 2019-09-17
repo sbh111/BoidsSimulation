@@ -1,5 +1,6 @@
 # FlockingSimulation
 An implementation of Craig Reynolds's Boids flocking algorithm in Python.
 
-#Demo
+# Demo
+![](res/demo.gif)
 
